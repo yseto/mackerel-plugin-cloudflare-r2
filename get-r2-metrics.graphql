@@ -1,0 +1,57 @@
+query GetR2Metrics($accountTag: string!, $startDate: Time!, $endDate: Time!) {
+  viewer {
+    accounts(filter: {accountTag: $accountTag}) {
+      classA: r2OperationsAdaptiveGroups(limit: 1000, filter: {datetime_geq: $startDate, datetime_lt: $endDate, actionStatus: "success", actionType_in: ["ListBuckets", "PutBucket", "ListObjects", "PutObject", "CopyObject", "CompleteMultipartUpload", "CreateMultipartUpload", "UploadPart", "UploadPartCopy", "PutBucketEncryption", "ListMultipartUploads"]}) {
+        dimensions {
+          actionType
+        }
+        sum {
+          requests
+          responseObjectSize
+        }
+      }
+      classB: r2OperationsAdaptiveGroups(limit: 1000, filter: {datetime_geq: $startDate, datetime_lt: $endDate, actionStatus: "success", actionType_in: ["HeadBucket", "HeadObject", "GetObject", "ReportUsageSummary", "GetBucketEncryption", "GetBucketLocation"]}) {
+        dimensions {
+          actionType
+        }
+        sum {
+          requests
+          responseObjectSize
+        }
+      }
+      classAperBucket: r2OperationsAdaptiveGroups(limit: 1000, filter: {datetime_geq: $startDate, datetime_lt: $endDate, actionStatus: "success", actionType_in: ["ListBuckets", "PutBucket", "ListObjects", "PutObject", "CopyObject", "CompleteMultipartUpload", "CreateMultipartUpload", "UploadPart", "UploadPartCopy", "PutBucketEncryption", "ListMultipartUploads"]}) {
+        dimensions {
+          bucketName
+        }
+        sum {
+          requests
+        }
+      }
+      classBperBucket: r2OperationsAdaptiveGroups(limit: 1000, filter: {datetime_geq: $startDate, datetime_lt: $endDate, actionStatus: "success", actionType_in: ["HeadBucket", "HeadObject", "GetObject", "ReportUsageSummary", "GetBucketEncryption", "GetBucketLocation"]}) {
+        dimensions {
+          bucketName
+        }
+        sum {
+          requests
+        }
+      }
+    }
+  }
+}
+query GetR2MetricsStorage($accountTag: string!, $startDate: Time!, $endDate: Time!) {
+  viewer {
+    accounts(filter: {accountTag: $accountTag}) {
+      storage: r2StorageAdaptiveGroups(orderBy: [bucketName_ASC], limit: 1000, filter: {datetime_geq: $startDate, datetime_lt: $endDate}) {
+        dimensions {
+          bucketName
+        }
+        max {
+          metadataSize
+          objectCount
+          payloadSize
+          uploadCount
+        }
+      }
+    }
+  }
+}

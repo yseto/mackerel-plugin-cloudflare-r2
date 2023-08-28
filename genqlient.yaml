@@ -1,0 +1,12 @@
+schema: schema.graphql
+operations:
+- get-r2-metrics.graphql
+generated: generated.go
+package: main
+bindings:
+  uint64:
+    type: uint64
+  string:
+    type: string
+  Time:
+    type: string
